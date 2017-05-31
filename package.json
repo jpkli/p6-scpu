@@ -1,5 +1,5 @@
 {
-  "name": "p4",
+  "name": "p4.js",
   "version": "0.1.0",
   "description": "Portable Parallel Processing Pipelines",
   "main": "src/index.js",
@@ -19,7 +19,7 @@
     "hpc"
   ],
   "author": "Kelvin Li",
-  "license": "GPL",
+  "license": "GPL-3.0",
   "dependencies": {
     "amdefine": "^1.0.0"
   }
