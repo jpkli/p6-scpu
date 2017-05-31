@@ -1,0 +1,26 @@
+{
+  "name": "p4",
+  "version": "0.1.0",
+  "description": "Portable Parallel Processing Pipelines",
+  "main": "src/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "."
+  },
+  "keywords": [
+    "data-management",
+    "parallel-processing",
+    "hpc"
+  ],
+  "author": "Kelvin Li",
+  "license": "GPL",
+  "dependencies": {
+    "amdefine": "^1.0.0"
+  }
+}

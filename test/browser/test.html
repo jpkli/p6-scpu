@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>P4 Browser Test Tool</title>
+        <!-- data-main attribute tells require.js to load
+             scripts/main.js after require.js loads. -->
+        <script src="require.js"></script>
+        <!-- <script src="p4.js"></script> -->
+        <script>
+        // console.log(p4);
+        // console.log(p4.ajax);
+        require(
+            [
+                "p4/io/ajax",
+                "p4/io/parser",
+                "p4/cquery/cstore",
+            ],
+            function(ajax, parser, CStore) {
+
+                ajax.get({
+                     url: "testData.csv", dataType: "text"
+                }).then(function(text){
+                    var csv = parser(text, ',');
+                    var db = CStore({
+                        size: csv.length,
+                        struct: [
+                            {name: "rank", type: "int"},
+                            {name: "chunks_finished", type: "int"},
+                            {name: "data_size", type: "int"},
+                            {name: "hops_finished", type: "float"},
+                            {name: "time_spend", type: "float"},
+                            {name: "busy_time", type: "float"},
+                            {name: "timestamp", type: "int"}
+                        ],
+                    });
+
+                    db.addRows(csv);
+
+                    db.filter({rank: 1});
+                    console.log(db.info());
+                })
+            }
+        )
+
+        </script>
+    </head>
+    <body>
+        <h1>P4 Browser Test Tool</h1>
+    </body>
+</html>
