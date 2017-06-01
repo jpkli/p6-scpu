@@ -1,8 +1,6 @@
-if (typeof(define) !== 'function') var define = require('amdefine')(module);
-
 define(function(require){
     "use strict";
-    var opt = require("../core/arrays.js");
+    var opt = require("../core/arrays");
 
     function stats(data, fields){
 
@@ -38,6 +36,5 @@ define(function(require){
 
         return result;
     }
-
     return stats;
 });

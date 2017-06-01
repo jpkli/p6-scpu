@@ -14,8 +14,9 @@
                 "p4/io/ajax",
                 "p4/io/parser",
                 "p4/cquery/cstore",
+                "p4/dataopt/stats"
             ],
-            function(ajax, parser, CStore) {
+            function(ajax, parser, CStore, stats) {
 
                 ajax.get({
                      url: "testData.csv", dataType: "text"

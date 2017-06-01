@@ -1,13 +1,17 @@
 {
   "name": "p4.js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Portable Parallel Processing Pipelines",
   "main": "src/index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
+    "prepublishOnly": "browserify src/util/wrap.js -o p4.js; uglifyjs p4.js > p4.min.js",
     "test": "node test/test.js"
+  },
+  "browserify": {
+    "transform": "deamdify"
   },
   "repository": {
     "type": "git",

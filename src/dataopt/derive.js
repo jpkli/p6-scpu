@@ -1,7 +1,7 @@
 define(function Derive(require) {
     "use strict";
 
-    var $ = require('../core/arrays');
+    var $ = require('../core/arrays.js');
 
     return function(data, spec){
         if(!Array.isArray(data))
