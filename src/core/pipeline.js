@@ -138,6 +138,15 @@ define(function(require){
             return result;
         }
 
+        pipeline.execute = function(data) {
+            if(Array.isArray(data)) result = data;
+            queue.forEach(function(q){
+                var f = Object.keys(q)[0];
+                result = opt[f](result, q[f]);
+            });
+            return result;
+        }
+
         pipeline.oncomplete = pipeline.then;
 
         pipeline.result = function() {
