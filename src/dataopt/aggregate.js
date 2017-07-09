@@ -58,9 +58,8 @@ define(function(require){
                 if(attributes.indexOf(key) !== -1 || opt === "$count") {
                     attr = key;
                 } else {
-
-                    attr = Object.keys(spec[key])[0];
-                    opt = spec[key][attr];
+                    opt = Object.keys(spec[key])[0];
+                    attr = spec[key][opt];
                     if(attributes.indexOf(attr) === -1 ) {
                         var warnMsg = "No matching attribute or operation defined for the new attribute " + key + ":" + spec[key];
                         console.warn(warnMsg);

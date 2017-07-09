@@ -11,35 +11,45 @@
         // console.log(p4.ajax);
         require(
             [
-                "p4/io/ajax",
-                "p4/io/parser",
-                "p4/cquery/cstore",
-                "p4/dataopt/stats"
+                "../../src/core/pipeline",
+                "../../src/columnar/aggregate"
             ],
-            function(ajax, parser, CStore, stats) {
+            function(pipeline, aggregate) {
 
-                ajax.get({
-                     url: "testData.csv", dataType: "text"
-                }).then(function(text){
-                    var csv = parser(text, ',');
-                    var db = CStore({
-                        size: csv.length,
-                        struct: [
-                            {name: "rank", type: "int"},
-                            {name: "chunks_finished", type: "int"},
-                            {name: "data_size", type: "int"},
-                            {name: "hops_finished", type: "float"},
-                            {name: "time_spend", type: "float"},
-                            {name: "busy_time", type: "float"},
-                            {name: "timestamp", type: "int"}
-                        ],
-                    });
+                var columns = [
+                    new Int32Array([1,2,2,4,3]),
+                    new Int32Array([2,4,2,4,3]),
+                    new Float32Array([10,20,40,41,23]),
+                ];
 
-                    db.addRows(csv);
+                columns.size = 5;
+                columns.keys = ['test', 'key', 'value'];
 
-                    db.filter({rank: 1});
-                    console.log(db.info());
-                })
+                var r = aggregate(columns, {
+                    $group: 'key',
+                    value: '$sum'
+                });
+
+                console.log(r);
+
+                var data = [
+                    {test: 2, key: 'a', value: 678},
+                    {test: 2, key: 'b', value: 132},
+                    {test: 2, key: 'a', value: 234},
+                    {test: 1, key: 'a', value: 231},
+                    {test: 3, key: 'b', value: 142}
+                ];
+
+                pipeline(data)
+                    .workers(2)
+                    // .select({test: 2})
+                    .aggregate({
+                        $group: 'key',
+                        totalValue: {$sum: 'value'}
+                    })
+                    .then(function(result){
+                        console.log(result);
+                    })
             }
         )
 
@@ -47,5 +57,6 @@
     </head>
     <body>
         <h1>P4 Browser Test Tool</h1>
+
     </body>
 </html>

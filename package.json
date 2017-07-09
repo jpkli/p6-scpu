@@ -7,8 +7,9 @@
     "test": "test"
   },
   "scripts": {
-    "prepublishOnly": "browserify src/util/wrap.js -o p4.js; uglifyjs p4.js > p4.min.js",
-    "test": "node test/test.js"
+    "wrap": "browserify src/util/wrap.js -o p4.js; uglifyjs p4.js > p4.min.js",
+    "test": "node test/test.js",
+    "prepublishOnly": "npm build"
   },
   "browserify": {
     "transform": "deamdify"
@@ -25,6 +26,10 @@
   "author": "Kelvin Li",
   "license": "GPL-3.0",
   "dependencies": {
-    "amdefine": "^1.0.0"
+    "amdefine": "^1.0.0",
+    "flexgl": "^0.1.0"
+  },
+  "devDependencies": {
+    "deamdify": "^0.3.0"
   }
 }

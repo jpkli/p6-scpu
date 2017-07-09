@@ -1,36 +1,50 @@
-if(typeof self === 'undefined' || typeof module.exports === 'undefined'){
-    // Node.js
-    var opt = require('../dataopt/query.js'),
-        self = process;
+define(function() {
+    var isBrowser;
+    return function() {
+        if (typeof module !== 'undefined' && module.exports) {
+            isBrowser = false;
+            var p4 = require('../../index.js');
+        } else {
+            isBrowser = true;
+        }
 
-    self.addEventListener = self.once;
-    self.postMessage = process.send;
+        var workerID,
+            dataopt,
+            data;
 
-} else {
-    // Browser
-    self.importScripts('./arrays.js');
-}
+        function exec(arg) {
+            var jobs = arg.jobs;
+            jobs.forEach(function(job){
+                var opt = Object.keys(job)[0];
+                var spec = job[opt];
+                console.log(opt, spec);
+                if(dataopt.hasOwnProperty(opt)) {
+                    data = dataopt[opt](data, spec);
+                }
+            });
+            self.postMessage({msg: 'result', workerID: workerID, result: data});
+        }
 
-var workerID;
-
-self.addEventListener('message', function(msg){
-    // console.log("worker", msg.command);
-    var task,
-        command = msg.command,
-        arg = msg.arg,
-        data = msg.data;
-
-    if(command == 'udf') { //user defined functions
-        task = new Function("return " + msg.fns)();
-    } else {
-        console.log("worker", command, data[0]);
-        if(command in opt) task = opt[command];
+        self.addEventListener('message', function(e){
+            var arg = e.data,
+                cmd = arg.cmd || arg.msg || arg.command;
+            console.log(cmd, arg);
+            switch(cmd) {
+                case 'init':
+                    workerID = arg.workerID;
+                    data = arg.data;
+                    if(isBrowser) {
+                        self.importScripts( arg.url + '/p4.js');
+                        dataopt = p4.dataopt;
+                    }
+                    break;
+                case 'exec':
+                    exec(arg);
+                    break;
+                default:
+                    console.log('nothing to do.');
+                    break;
+            };
+        }, false);
     }
-    workerID = msg.id
-    var start = new Date();
-    var res = task(data, arg);
-
-    process.send({data:res, workerID: workerID});
-    console.log("worker",workerID, data.length, res.length, new Date().getTime(), new Date() - start);
-
-}, false);
+})

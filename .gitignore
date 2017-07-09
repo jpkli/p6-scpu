@@ -1,3 +1,5 @@
 test/data/
 */tmp/*
 node_modules
+out/*
+docs/*

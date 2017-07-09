@@ -1,0 +1,6 @@
+[submodule "p4-gl"]
+	path = p4-gl
+	url = https://github.com/jpkli/p4-gl
+[submodule "gl"]
+	path = gl
+	url = https://github.com/jpkli/p4-gl

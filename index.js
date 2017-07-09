@@ -1,3 +1,3 @@
-const p4 = require('./src/util/wrap.js');
+var p4 = require('./src/util/wrap.js');
 
 module.exports = p4;
