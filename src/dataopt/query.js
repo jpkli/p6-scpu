@@ -35,6 +35,8 @@ define(function Query(require){
                         } else if(opt == "$inDate"){
                             match = (spec[key][opt].map(Number).indexOf(+(obj[index])) > -1);
                         }
+                    } else if(spec[key] instanceof Array) {
+                        match =(obj[key] >= spec[key][0] & obj[index] <= spec[key][1]);
                     }
                 } else {
                     if(spec[key][0] === "$")

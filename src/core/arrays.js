@@ -10,6 +10,8 @@ define(function Arrays(require) {
             fn,
             result;
 
+        if(!len) return 0;
+
         switch (opt) {
             case "max":
                 result = array.reduce(function(a, b) {

@@ -21,7 +21,7 @@ define(function select(require){
 
                 if(typeof spec[key] === 'object'){
                     opt = Object.keys(spec[key])[0];
-
+                    console.log(opt);
                     if(opt[0] == "$" && spec[key][opt] instanceof Array){
                         if(opt == "$in" || opt == "$nin"){
                             match = ((opt == "$nin") ^ (spec[key][opt].indexOf(obj[index]) > -1));
@@ -32,6 +32,9 @@ define(function select(require){
                         } else if(opt == "$inDate"){
                             match = (spec[key][opt].map(Number).indexOf(+(obj[index])) > -1);
                         }
+                    } else if(spec[key] instanceof Array) {
+                        console.log(spec[key]);
+                        match =(obj[key] >= spec[key][0] & obj[index] <= spec[key][1]);
                     }
                 } else if (Array.isArray(spec[key])) {
                     match = (obj[key] >= spec[key][0] & obj[index] <= spec[key][1]);

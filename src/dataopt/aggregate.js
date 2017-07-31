@@ -1,5 +1,6 @@
 define(function(require){
     var ArrayOpts = require("../core/arrays.js");
+
     return function(data, spec, headers){
         var i,
             l = data.length,
@@ -11,10 +12,30 @@ define(function(require){
             result = [],
             ks;
 
-        if(keys.indexOf("$group") < 0) return result;
+        if(keys.indexOf("$group") < 0 && keys.indexOf("$bin") < 0) return result;
+
+        if(typeof spec.$bin == 'object') {
+            var binAttr = Object.keys(spec.$bin)[0],
+                binCount = spec.$bin[binAttr];
+
+            if(attributes.indexOf(binAttr) !== -1) {
+                var column = data.map(function(d){return d[binAttr]}),
+                    min = ArrayOpts.min(column),
+                    max = ArrayOpts.max(column),
+                    binInterval = (max - min) / binCount;
+
+                for(i = 0; i < l; i++){
+                    data[i]['bin@' + binAttr] = Math.min(Math.floor(data[i][binAttr]/binInterval), binCount-1);
+                }
+
+                spec.$group = 'bin@' + binAttr;
+                attributes.push('bin@' + binAttr);
+            }
+
+        }
 
         for(i = 0; i < l; i++){
-            if(spec.$group instanceof Array) {
+            if(Array.isArray(spec.$group)) {
                 ks = [];
                 spec.$group.forEach(function(si){
                     ks.push(data[i][si]);
@@ -35,7 +56,7 @@ define(function(require){
 
         for(i = 0; i < bl; i++){
             var res = {};
-            if(spec.$group instanceof Array) {
+            if(Array.isArray(spec.$group)) {
                 ks = JSON.parse(bins[i]);
                 spec.$group.forEach(function(s, j){
                     res[s] = ks[j];
@@ -49,18 +70,30 @@ define(function(require){
                 res.data = binCollection[bins[i]];
             }
 
-            keys.forEach(function(key){
-                if(key == "$group" || key == "$data") return;
+            if(spec.$group) {
+                var gkeys = Array.isArray(spec.$group) ? spec.$group : [spec.$group];
 
-                var attr,
+                gkeys.forEach(function(gk){
+                    if(attributes.indexOf(gk) === -1)
+                        throw Error('Invalid attribute name: ', gk);
+                })
+            }
+
+            keys = keys.filter(function(k){ return ["$bin", "$group"].indexOf(k) === -1; });
+
+            keys.forEach(function(key){
+                var attr = key,
                     opt = spec[key];
 
-                if(attributes.indexOf(key) !== -1 || opt === "$count") {
+                if(opt === "$count" || opt === "$data") {
                     attr = key;
-                } else {
+                }
+                if(typeof spec[key] === 'object'){
                     opt = Object.keys(spec[key])[0];
                     attr = spec[key][opt];
-                    if(attributes.indexOf(attr) === -1 ) {
+
+
+                    if(attributes.indexOf(attr) === -1 && attr !== "*" && !Array.isArray(attr)) {
                         var warnMsg = "No matching attribute or operation defined for the new attribute " + key + ":" + spec[key];
                         console.warn(warnMsg);
                         return;
@@ -86,7 +119,14 @@ define(function(require){
                     } else if (opt === "$count") {
                         res[key] = binCollection[bins[i]].length;
                     } else if (opt === "$data") {
-                        res[key] = binCollection[bins[i]];
+
+                        res[key] = (spec[key][opt] == '*')
+                            ? binCollection[bins[i]]
+                            : binCollection[bins[i]].map(function(data){
+                                var row = {};
+                                spec[key][opt].forEach(function(k){ row[k] = data[k] });
+                                return row;
+                            });
                     } else {
                         var fname = opt.slice(1);
                         if(fname in ArrayOpts) {
