@@ -28,7 +28,7 @@ define(function() {
         self.addEventListener('message', function(e){
             var arg = e.data,
                 cmd = arg.cmd || arg.msg || arg.command;
-            console.log(cmd, arg);
+
             switch(cmd) {
                 case 'init':
                     workerID = arg.workerID;

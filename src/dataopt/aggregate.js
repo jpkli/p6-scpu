@@ -31,7 +31,6 @@ define(function(require){
                 spec.$group = 'bin@' + binAttr;
                 attributes.push('bin@' + binAttr);
             }
-
         }
 
         for(i = 0; i < l; i++){
