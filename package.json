@@ -30,6 +30,7 @@
     "flexgl": "^0.1.0"
   },
   "devDependencies": {
-    "deamdify": "^0.3.0"
+    "deamdify": "^0.3.0",
+    "jStat": "^1.7.0"
   }
 }
