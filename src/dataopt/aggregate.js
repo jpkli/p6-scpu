@@ -73,8 +73,9 @@ define(function(require){
                 var gkeys = Array.isArray(spec.$group) ? spec.$group : [spec.$group];
 
                 gkeys.forEach(function(gk){
-                    if(attributes.indexOf(gk) === -1)
+                    if(attributes.indexOf(gk) === -1) {
                         throw Error('Invalid attribute name: ', gk);
+                    }
                 })
             }
 

@@ -1,3 +1,4 @@
+
 if (typeof module !== 'undefined' && module.exports) {
      var Worker = require('webworker-threads').Worker;
      var prepareWorker = function(work) {

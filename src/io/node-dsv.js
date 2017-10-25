@@ -74,6 +74,11 @@ define(function nodeDSV(require){
                 data = leftOver + data;   //prepend leftover from previous chunk
                 rows = data.split('\n');
 
+                while(skipRow > 0) {
+                    rows.shift();
+                    skipRow--;
+                }
+
                 leftOver = rows.pop();   //get leftover from current chunk (if any)
                 rows = rows.map(function(r){
                     return r.split(delimiter);
